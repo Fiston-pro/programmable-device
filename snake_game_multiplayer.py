@@ -103,6 +103,10 @@ def gameloop():
     global snake_move_dir
     global snake2_move_dir
     global apple_coords
+    global restart_window_open  
+
+    if restart_window_open:  # Check if restart window is open
+        return  # If restart window is open, do not update game state
 
     # game speed =  1s/wps (frames per second)
     snake_window.after(1000 // wps, gameloop)
