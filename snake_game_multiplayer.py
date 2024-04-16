@@ -3,6 +3,7 @@ import time
 import random
 import sys
 import math
+
 ####################################################################################################################
 # game parameters
 # game window
@@ -115,22 +116,47 @@ def gameloop():
     snake_moved_in_this_frame = False
     snake2_moved_in_this_frame = False
 
-    # head-tail collision - game restart
+    # head-tail and other snake collision - game restart
     for segment in snake_tail:
         if (segment[0] == snake_coords[0] and segment[1] == snake_coords[1]):
             snake_coords = [game_dimensions[0] // 2, game_dimensions[1] // 2]
             snake_tail = []
+            snake2_coords = [(game_dimensions[0] // 2)+2, (game_dimensions[1] // 2)+2]
+            snake2_tail = []
             snake_move_dir = [1, 0]
+            snake2_move_dir = [1, 0]
             apple_coords = generateAppleCoords()
+
+        if (segment[0] == snake2_coords[0] and segment[1] == snake2_coords[1]):
+            snake_coords = [game_dimensions[0] // 2, game_dimensions[1] // 2]
+            snake_tail = []
+            snake2_coords = [(game_dimensions[0] // 2)+2, (game_dimensions[1] // 2)+2]
+            snake2_tail = []
+            snake_move_dir = [1, 0]
+            snake2_move_dir = [1, 0]
+            apple_coords = generateAppleCoords()
+
         # display a snake
         createGridItem(segment, "#00ff00")
         
     # head-tail collision 2 - game restart
     for segment in snake2_tail:
-        if (segment[0] == snake2_coords[0] and segment[1] == snake2_coords[1]):
+        if (segment[0] == snake_coords[0] and segment[1] == snake_coords[1]):
+            snake_coords = [game_dimensions[0] // 2, game_dimensions[1] // 2]
+            snake_tail = []
             snake2_coords = [game_dimensions[0] // 2, game_dimensions[1] // 2]
             snake2_tail = []
             snake_move_dir = [1, 0]
+            snake2_move_dir = [1, 0]
+            apple_coords = generateAppleCoords()
+            
+        if (segment[0] == snake2_coords[0] and segment[1] == snake2_coords[1]):
+            snake_coords = [game_dimensions[0] // 2, game_dimensions[1] // 2]
+            snake_tail = []
+            snake2_coords = [game_dimensions[0] // 2, game_dimensions[1] // 2]
+            snake2_tail = []
+            snake_move_dir = [1, 0]
+            snake2_move_dir = [1, 0]
             apple_coords = generateAppleCoords()
         # display a snake
         createGridItem(segment, "#ff0000")
@@ -148,6 +174,8 @@ def gameloop():
         apple_coords = generateAppleCoords()
     else:
         snake2_tail.pop(0)
+        
+    
 
 # keyboard
 def key(e):
