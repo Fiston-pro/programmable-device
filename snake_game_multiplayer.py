@@ -3,7 +3,6 @@ import time
 import random
 import sys
 import math
-
 ####################################################################################################################
 # game parameters
 # game window
@@ -59,6 +58,35 @@ def generateAppleCoords():
     # apple coordinates
     return apple_coords
 
+restart_window_open = False
+winner_window = None
+
+def show_winner(winner):
+    global restart_window_open, winner_window
+    if not restart_window_open:
+        winner_window = tk.Toplevel(snake_window)
+        winner_window.title("Game Over")
+        winner_label = tk.Label(winner_window, text=f"Snake {winner} wins!", font=("Helvetica", 20))
+        winner_label.pack(pady=20)
+        restart_button = tk.Button(winner_window, text="Restart Game", command=restart_game)
+        restart_button.pack(pady=10)
+        restart_window_open = True
+
+def restart_game():
+    global snake_coords, snake_tail, snake2_coords, snake2_tail, snake_move_dir, snake2_move_dir, apple_coords, restart_window_open, winner_window
+    if winner_window:
+        winner_window.destroy()
+    snake_coords = [game_dimensions[0] // 2, game_dimensions[1] // 2]
+    snake_tail = []
+    snake2_coords = [(game_dimensions[0] // 2) + 2, (game_dimensions[1] // 2) + 2]
+    snake2_tail = []
+    snake_move_dir = [1, 0]
+    snake2_move_dir = [1, 0]
+    apple_coords = generateAppleCoords()
+    restart_window_open = False
+
+
+
 # game
 def gameloop():
     # global game variables
@@ -91,26 +119,17 @@ def gameloop():
     snake_coords[0] += snake_move_dir[0]
     snake_coords[1] += snake_move_dir[1]
     
-    if (snake_coords[0] == game_dimensions[0]):
-        snake_coords[0] = 0
-    elif (snake_coords[0] == -1):
-        snake_coords[0] = game_dimensions[0] - 1
-    elif (snake_coords[1] == game_dimensions[1]):
-        snake_coords[1] = 0
-    elif (snake_coords[1] == -1):
-        snake_coords[1] = game_dimensions[1] - 1
-        
+    if (snake_coords[0] == game_dimensions[0] or snake_coords[0] == -1 or snake_coords[1] == game_dimensions[1] or snake_coords[1] == -1):
+        show_winner('Red')
+        return
+                
     # move the snake 2
     snake2_coords[0] += snake2_move_dir[0]
     snake2_coords[1] += snake2_move_dir[1]
-    if (snake2_coords[0] == game_dimensions[0]):
-        snake2_coords[0] = 0
-    elif (snake2_coords[0] == -1):
-        snake2_coords[0] = game_dimensions[0] - 1
-    elif (snake2_coords[1] == game_dimensions[1]):
-        snake2_coords[1] = 0
-    elif (snake2_coords[1] == -1):
-        snake2_coords[1] = game_dimensions[1] - 1
+    
+    if (snake2_coords[0] == game_dimensions[0] or snake2_coords[0] == -1 or snake2_coords[1] == game_dimensions[1] or snake2_coords[1] == -1):
+        show_winner('Green')
+        return
         
     # snake moved in the frame
     snake_moved_in_this_frame = False
@@ -174,8 +193,6 @@ def gameloop():
         apple_coords = generateAppleCoords()
     else:
         snake2_tail.pop(0)
-        
-    
 
 # keyboard
 def key(e):
